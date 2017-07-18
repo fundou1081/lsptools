@@ -1,7 +1,6 @@
 ;;; Panel layout
-
 ;;; haobo
-
+;;; v2017
 ;;; read excel
 (defun c:getpaneldata()
     (setq fileDir (getfiled "Open paneldata file" "" "xlsx" 16))    ;;; 窗口名称 默认路径 扩展名 flag
