@@ -26,22 +26,42 @@
 )
 
 (defun testfun()
-    (setq ss (ssget "select b"))
+    (setq ss (ssget "select blocks: "))
     
     (setq n 0)
     (repeat (sslength ss)
         (setq en (ssname ss n))
         (setq endata (entget en))
         (setq entype (cdr (assoc 0 endata)))
-        (if (= entype "CIRCLE")
-            (sub_fun)
+        (if (= entype "insert")
+            (sub_fun en)
         )    
         (setq n (+ 1 n))
-    
     )
 
 )
-(defun subfun()
+(defun subfun(en )
+    (vl-load-com)
+    (setq xobj (vlax-ename->vla-object en))
+    (setq inspoint (vlax-get-property xobj 'InsertionPoint))
+
+    (setq oripoint (list (car inspoint) (cadr inspoint)))
+    (setq target (gettarget))
+    (setq offset (getoffset))
+    
+    ;; left up point
+    (setq dirct (list 1 -1))
+    (drawCoords oripoint target offset dirct)
+    ;; right up point
+    (setq dirct (list -1 1))
+    (drawCoords oripoint target offset dirct)
+    ;; right down point
+    (setq dirct (list -1 1))
+    (drawCoords oripoint target offset dirct)
+    ;; left down point
+    (setq dirct (list 1 1))
+    (drawCoords oripoint target offset dirct)
+
     (setq 40_list (assoc 40 entdata))
     (setq new_40_list (cons 40 new_rad))
     (setq endata (subdata new_40_list 40_list endata))
