@@ -24,10 +24,6 @@
     (setvar "cmdecho" cmvar)
 )
 
-(defun getoffset(/ result)
-
-    (setq result (list 20 20))
-)
 
 (defun subfun( en / xobj vardata safedata inspoint refpoint offset target dirct)
     (vl-load-com)
@@ -37,23 +33,26 @@
     (setq inspoint (vlax-safearray->list safedata))
 
     (setq refpoint (list (car inspoint) (cadr inspoint)))
-    (setq offset (getoffset))
 
     ;; left up point
     (setq target (list -100 100))
     (setq dirct (list 1 -1))
+    (setq offset (list 20 -20))
     (drawCoords refpoint target offset dirct)
     ;; right up point
     (setq target (list 100 100))
     (setq dirct (list -1 -1))
+    (setq offset (list -4 -20));;;补偿16 对称
     (drawCoords refpoint target offset dirct)
     ;; right down point
     (setq target (list 100 -100))
     (setq dirct (list -1 1))
+    (setq offset (list -4 20));;;补偿16 对称
     (drawCoords refpoint target offset dirct)
     ;; left down point
     (setq target (list -100 -100))    
     (setq dirct (list 1 1))
+    (setq offset (list 20 20))
     (drawCoords refpoint target offset dirct)
 
 )
@@ -67,9 +66,9 @@
     (setq strx (rtos rx 2 3))
     (setq stry (rtos ry 2 3))
     (setq strp (strcat "X=" strx "\n" "Y=" stry))
-    (setq dx (* (car offset ) (car dirct ) ) )
-    (setq dy (* (cadr offset) (cadr dirct) ) )
 
+    (setq dx (car offset ) ) 
+    (setq dy (cadr offset)) 
     (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
     
     (command "mleader" "l" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
