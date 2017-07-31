@@ -5,11 +5,13 @@
 ;;; read excel
 
 
-(defun c:drawmark(/ os blkData elsSheet )
-    (setvar "cmdecho" 0);;; close cmd output , it can cause wrong input 
-    (setq os (getvar "osmode"));;取得当前捕捉设置
-    (setvar "osmode" 0);;关闭捕捉
-    
+(defun c:drawmark( / cmvar osvar blkData elsSheet )
+
+    (setq cmvar (getvar "cmdecho"))
+    (setvar "cmdecho" 0)
+    (setq osvar (getvar "osmode"));;取得当前捕捉设置
+    (setvar "osmode" 0);;;;; close cmd output , it can cause wrong input 
+
     (setq blkData (getBlockData 2 10))
     ;;; blkname basepointX basepointY
 
@@ -21,8 +23,8 @@
     ;;;(drawText markPoints )
 
 
-    (setvar "osmode" os);; 绘图结束还原捕捉设置
-    (setvar "cmdecho" 1)
+    (setvar "osmode" osvar);; 绘图结束还原捕捉设置
+    (setvar "cmdecho" cmvar)
 )
 
 (defun drawBlock(blkData elsArea markPoints /  step blkname blkbase col row px py pnum textflag xmk ymk nmk mmk cmk dmk tD)

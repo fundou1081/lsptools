@@ -1,6 +1,14 @@
-(defun c:testfun(/ ss n en endata entype)
+(defun c:testfun( / cmvar osvar ss n en endata entype)
+
+    (setq cmvar (getvar "cmdecho"))
+    (setvar "cmdecho" 0)
+    (setq osvar (getvar "osmode"))
+    (setvar "osmode" 0)
+
     (setq ss (ssget ))
     
+    (command "zoom" "e")
+
     (setq n 0)
     (repeat (sslength ss)
         (setq en (ssname ss n))
@@ -8,11 +16,12 @@
         (setq entype (cdr (assoc 0 endata)))
         (if (= entype "INSERT")
             (subfun en)
-            (princ "d")
         )    
         (setq n (+ 1 n))
     )
 
+    (setvar "osmode" osvar);; 绘图结束还原捕捉设置
+    (setvar "cmdecho" cmvar)
 )
 
 (defun getoffset(/ result)
@@ -20,37 +29,39 @@
     (setq result (list 20 20))
 )
 
-(defun subfun( en / xobj inspoint oripoint offset target dirct)
+(defun subfun( en / xobj vardata safedata inspoint refpoint offset target dirct)
     (vl-load-com)
     (setq xobj (vlax-ename->vla-object en))
-    (setq inspoint (vlax-get-property xobj 'InsertionPoint))
+    (setq vardata (vlax-get-property xobj 'InsertionPoint))
+    (setq safedata (vlax-variant-value vardata))
+    (setq inspoint (vlax-safearray->list safedata))
 
-    (setq oripoint (list (car inspoint) (cadr inspoint)))
+    (setq refpoint (list (car inspoint) (cadr inspoint)))
     (setq offset (getoffset))
 
     ;; left up point
     (setq target (list -100 100))
     (setq dirct (list 1 -1))
-    (drawCoords oripoint target offset dirct)
+    (drawCoords refpoint target offset dirct)
     ;; right up point
-    (setq target (list 100 300))
-    (setq dirct (list -1 1))
-    (drawCoords oripoint target offset dirct)
+    (setq target (list 100 100))
+    (setq dirct (list -1 -1))
+    (drawCoords refpoint target offset dirct)
     ;; right down point
-    (setq target (list 100 -400))
+    (setq target (list 100 -100))
     (setq dirct (list -1 1))
-    (drawCoords oripoint target offset dirct)
+    (drawCoords refpoint target offset dirct)
     ;; left down point
-    (setq target (list -200 -100))    
+    (setq target (list -100 -100))    
     (setq dirct (list 1 1))
-    (drawCoords oripoint target offset dirct)
+    (drawCoords refpoint target offset dirct)
 
 )
 
-(defun drawCoords( oripoint target offset dirct/ rx ry XYZ strx stry strp dx dy XYZ2)
+(defun drawCoords ( refpoint target offset dirct / rx ry XYZ strx stry strp dx dy XYZ2)
 
-    (setq rx (+ (car oripoint ) (car target ) ) )
-    (setq ry (+ (cadr oripoint) (cadr target) ) )
+    (setq rx (+ (car refpoint ) (car target ) ) )
+    (setq ry (+ (cadr refpoint) (cadr target) ) )
     (setq XYZ (list rx ry 0))
 
     (setq strx (rtos rx 2 3))
