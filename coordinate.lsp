@@ -1,3 +1,71 @@
+(defun c:testfun(/ ss n en endata entype)
+    (setq ss (ssget ))
+    
+    (setq n 0)
+    (repeat (sslength ss)
+        (setq en (ssname ss n))
+        (setq endata (entget en))
+        (setq entype (cdr (assoc 0 endata)))
+        (if (= entype "INSERT")
+            (subfun en)
+            (princ "d")
+        )    
+        (setq n (+ 1 n))
+    )
+
+)
+
+(defun getoffset(/ result)
+
+    (setq result (list 20 20))
+)
+
+(defun subfun( en / xobj inspoint oripoint offset target dirct)
+    (vl-load-com)
+    (setq xobj (vlax-ename->vla-object en))
+    (setq inspoint (vlax-get-property xobj 'InsertionPoint))
+
+    (setq oripoint (list (car inspoint) (cadr inspoint)))
+    (setq offset (getoffset))
+
+    ;; left up point
+    (setq target (list -100 100))
+    (setq dirct (list 1 -1))
+    (drawCoords oripoint target offset dirct)
+    ;; right up point
+    (setq target (list 100 300))
+    (setq dirct (list -1 1))
+    (drawCoords oripoint target offset dirct)
+    ;; right down point
+    (setq target (list 100 -400))
+    (setq dirct (list -1 1))
+    (drawCoords oripoint target offset dirct)
+    ;; left down point
+    (setq target (list -200 -100))    
+    (setq dirct (list 1 1))
+    (drawCoords oripoint target offset dirct)
+
+)
+
+(defun drawCoords( oripoint target offset dirct/ rx ry XYZ strx stry strp dx dy XYZ2)
+
+    (setq rx (+ (car oripoint ) (car target ) ) )
+    (setq ry (+ (cadr oripoint) (cadr target) ) )
+    (setq XYZ (list rx ry 0))
+
+    (setq strx (rtos rx 2 3))
+    (setq stry (rtos ry 2 3))
+    (setq strp (strcat "X=" strx "\n" "Y=" stry))
+    (setq dx (* (car offset ) (car dirct ) ) )
+    (setq dy (* (cadr offset) (cadr dirct) ) )
+
+    (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
+    
+    (command "mleader" "l" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
+
+)
+
+
 (defun c:pick()
     (vl-load-com)
     (setq en (car (entsel "select:")))
@@ -5,7 +73,6 @@
     (vlax-dump-object xobj)
 )
 
-;;(vla-put
 
 (defun c:drawXY()
 
@@ -25,48 +92,8 @@
 
 )
 
-(defun testfun()
-    (setq ss (ssget "select blocks: "))
-    
-    (setq n 0)
-    (repeat (sslength ss)
-        (setq en (ssname ss n))
-        (setq endata (entget en))
-        (setq entype (cdr (assoc 0 endata)))
-        (if (= entype "insert")
-            (sub_fun en)
-        )    
-        (setq n (+ 1 n))
-    )
 
-)
-(defun subfun(en )
-    (vl-load-com)
-    (setq xobj (vlax-ename->vla-object en))
-    (setq inspoint (vlax-get-property xobj 'InsertionPoint))
 
-    (setq oripoint (list (car inspoint) (cadr inspoint)))
-    (setq target (gettarget))
-    (setq offset (getoffset))
-    
-    ;; left up point
-    (setq dirct (list 1 -1))
-    (drawCoords oripoint target offset dirct)
-    ;; right up point
-    (setq dirct (list -1 1))
-    (drawCoords oripoint target offset dirct)
-    ;; right down point
-    (setq dirct (list -1 1))
-    (drawCoords oripoint target offset dirct)
-    ;; left down point
-    (setq dirct (list 1 1))
-    (drawCoords oripoint target offset dirct)
-
-    (setq 40_list (assoc 40 entdata))
-    (setq new_40_list (cons 40 new_rad))
-    (setq endata (subdata new_40_list 40_list endata))
-    (entmod endata)
-)
 
 
 (defun c:pt()
