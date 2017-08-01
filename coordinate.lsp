@@ -31,9 +31,9 @@
     (setq vardata (vlax-get-property xobj 'InsertionPoint))
     (setq safedata (vlax-variant-value vardata))
     (setq inspoint (vlax-safearray->list safedata))
+    (setq userucs (getvar "ucsorg"))
 
-    (setq refpoint (list (car inspoint) (cadr inspoint)))
-
+    (setq refpoint (list (- (car inspoint) (car userucs)) (- (cadr inspoint) (cadr userucs))))
 
     (setq AA (list 28.032 35.04))
     (setq u 0.9)
@@ -47,23 +47,23 @@
 
     ;; left up point
     (setq target (list (- 0 x l) (+ y u)))
-    (setq dirct (list 1 -1))
-    (setq offset (list 20 -20))
+    (setq dirct "ml")
+    (setq offset (list 5 -5))
     (drawCoords refpoint target offset dirct)
     ;; right up point
     (setq target (list (+ x r) (+ y u) ))
-    (setq dirct (list -1 -1))
-    (setq offset (list -4 -20));;;补偿16 对称
+    (setq dirct "mr")
+    (setq offset (list -5 -5))
     (drawCoords refpoint target offset dirct)
     ;; right down point
     (setq target (list (+ x r) (- 0 y d) ))
-    (setq dirct (list -1 1))
-    (setq offset (list -4 20));;;补偿16 对称
+    (setq dirct "mr")
+    (setq offset (list -5 5))
     (drawCoords refpoint target offset dirct)
     ;; left down point
     (setq target (list (- 0 x l) (- 0 y d) ))    
-    (setq dirct (list 1 1))
-    (setq offset (list 20 20))
+    (setq dirct "ml")
+    (setq offset (list 5 5))
     (drawCoords refpoint target offset dirct)
 
 )
@@ -81,8 +81,21 @@
     (setq dx (car offset ) ) 
     (setq dy (cadr offset)) 
     (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
+
+    (command "line" XYZ XYZ2 "")
+
+    (command "mtext" XYZ2 "j" dirct XYZ2 strp "" )
+
+    ;;(command "mleader" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
+
+    (if (= dirct "mr")
+        (progn
+            (setq mt (entlast))
+            (setq obj (vlax-ename->vla-object mt))
+            (vlax-put-property obj 'DrawingDirection 3)
+        )
+    )
     
-    (command "mleader" "l" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
 
 )
 
