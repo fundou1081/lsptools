@@ -74,10 +74,6 @@
     (setq ry (+ (cadr refpoint) (cadr target) ) )
     (setq XYZ (list rx ry 0))
 
-    (setq dx (car offset ) ) 
-    (setq dy (cadr offset)) 
-    (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
-
     (setq strx (rtos rx 2 3))
     (setq stry (rtos ry 2 3))
     (setq strp (strcat "X=" strx "\n" "Y=" stry))
@@ -91,9 +87,6 @@
     (command "mtext" XYZ2 "j" dirct XYZ2 strp "" )
 
     ;;(command "mleader" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
-    (setq mt (entlast))
-    (setq obj (vlax-ename->vla-object mt))
-    (vlax-put-property obj 'Height 1.0)
 
     (if (= dirct "mr")
         (progn
@@ -115,13 +108,69 @@
 )
 
 
-(defun c:pt()
-    (setvar "cmdecho" 0)
-    (while (setq pt1 (getpoint "\n请指定点位置:"))
-        (setq point_x (rtos (car pt1) 2 2))
-        (setq point_y (rtos (cadr pt1) 2 2))
-        (setq point_z (rtos (caddr pt1) 2 2))
-        (command "_text" pt1 "" "" (strcat "(" point_x "," point_y "," point_z ")"))
-    )
-    (setvar "cmdecho" 1)
+(defun c:drawXY()
+
+    ;; get current coordinate
+    
+    (setq XYZ (getpoint "select point: "))
+    (setq rx (car XYZ))
+    (setq ry (cadr XYZ))
+    (setq strx (rtos rx 2 3))
+    (setq stry (rtos ry 2 3))
+    (setq strp (strcat "X=" strx "\n" "Y=" stry))
+    (setq dx 5)
+    (setq dy 5)
+    (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
+    
+    (command "mleader" "l" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
+
 )
+
+
+
+
+
+(defun c:pt()
+  (setvar "cmdecho" 0)
+  (while (setq pt1 (getpoint "\n请指定点位置:"))
+    (setq point_x (rtos (car pt1) 2 2))
+    (setq point_y (rtos (cadr pt1) 2 2))
+    (setq point_z (rtos (caddr pt1) 2 2))
+    (command "_text" pt1 "" "" (strcat "(" point_x "," point_y "," point_z ")"))
+    )
+    (princ)
+)
+
+
+
+(defun acadinfo()
+     (vl-load-com)
+     (setq acadobj (vlax-get-acad-object))
+     (setq dwgobj (vla-get-ActiveDocument acadobj))
+     (setq mspace (vla-get-ModelSpace dwgobj))
+)
+
+(defun addDimstyles()
+    (vl-load-com)
+    (setq acadobj (vlax-get-acad-object))
+    (setq dwgobj (vla-get-ActiveDocument acadobj))
+    (setq dimstylesobj (vla-get-dimstyles dwgobj))
+)
+
+
+(defun addLayouts())
+(defun addLinetypes())
+(defun addTextStyles())
+
+
+(defun chactDimstyle())
+(defun chactLayer())
+(defun chactLayout())
+(defun chactLinetype())
+(defun chactMaterial())
+(defun chactPviewport())
+(defun chactSelectionset())
+(defun chactSpace())
+(defun chactTextstyle())
+(defun chactUCS())
+(defun chactViewport())
