@@ -86,3 +86,11 @@
 
 ;;;只选择圆
 (setq ss4 (ssget "X" '( (0 . "CIRCLE")))) 
+
+
+;定义字体
+(command "style" "d" "arial" "1.5" "1.0" "0.0" "N" "N" )
+; 字高 宽度 角度 颠倒 反向
+
+(command "dimlinear" p1 p2 "h" p3)
+(command "dimlinear" p1 p2 "h" "@-20,5")

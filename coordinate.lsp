@@ -68,7 +68,7 @@
 
 )
 
-(defun drawCoords ( refpoint target offset dirct / rx ry XYZ strx stry strp dx dy XYZ2)
+(defun drawCoords ( refpoint target offset dirct / rx ry XYZ strx stry strp dx dy XYZ2 en obj)
 
     (setq rx (+ (car refpoint ) (car target ) ) )
     (setq ry (+ (cadr refpoint) (cadr target) ) )
@@ -88,30 +88,48 @@
 
     (command "line" XYZ XYZ2 "")
 
-    (command "mtext" XYZ2 "j" dirct XYZ2 strp "" )
+    (command "mtext" XYZ2 "j" dirct XYZ2 strp "")
 
     ;;(command "mleader" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
-    (setq mt (entlast))
-    (setq obj (vlax-ename->vla-object mt))
+    (setq en (entlast))
+    (setq obj (vlax-ename->vla-object en))
     (vlax-put-property obj 'Height 1.0)
 
     (if (= dirct "mr")
         (progn
-            (setq mt (entlast))
-            (setq obj (vlax-ename->vla-object mt))
-            (vlax-put-property obj 'DrawingDirection 3)
+            (setq en (entlast))
+            (setq obj (vlax-ename->vla-object en))
+            (vlax-put-property obj 'AttachmentPoint 4)
         )
     )
-    
-
 )
+
+(defun chcode( en code data / endata)
+    
+    (setq endata (entget en))
+    (setq old (assoc code endata))
+    (setq new (cons code data))
+    (if (= old nil)
+        (progn
+            (setq endata (cons new endata))
+        )
+        ;;else
+        (progn
+            
+            (setq endata (subst new old endata))
+        )
+    )
+
+    (entmod endata)
+)
+
 
 
 (defun c:pick()
     (vl-load-com)
     (setq en (car (entsel "select:")))
-    (setq xobj (vlax-ename->vla-object en))
-    (vlax-dump-object xobj)
+    (setq obj (vlax-ename->vla-object en))
+    (vlax-dump-object obj)
 )
 
 
