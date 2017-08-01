@@ -34,23 +34,34 @@
 
     (setq refpoint (list (car inspoint) (cadr inspoint)))
 
+
+    (setq AA (list 28.032 35.04))
+    (setq u 0.9)
+    (setq d 0.9)
+    (setq l 0.999)
+    (setq r 0.999)
+
+    (setq x (/ (car AA) 2 ))
+    (setq y (/ (cadr AA) 2 ))
+    
+
     ;; left up point
-    (setq target (list -100 100))
+    (setq target (list (- 0 x l) (+ y u)))
     (setq dirct (list 1 -1))
     (setq offset (list 20 -20))
     (drawCoords refpoint target offset dirct)
     ;; right up point
-    (setq target (list 100 100))
+    (setq target (list (+ x r) (+ y u) ))
     (setq dirct (list -1 -1))
     (setq offset (list -4 -20));;;补偿16 对称
     (drawCoords refpoint target offset dirct)
     ;; right down point
-    (setq target (list 100 -100))
+    (setq target (list (+ x r) (- 0 y d) ))
     (setq dirct (list -1 1))
     (setq offset (list -4 20));;;补偿16 对称
     (drawCoords refpoint target offset dirct)
     ;; left down point
-    (setq target (list -100 -100))    
+    (setq target (list (- 0 x l) (- 0 y d) ))    
     (setq dirct (list 1 1))
     (setq offset (list 20 20))
     (drawCoords refpoint target offset dirct)
