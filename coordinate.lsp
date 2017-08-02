@@ -25,7 +25,7 @@
 )
 
 
-(defun subfun( en / xobj vardata safedata inspoint refpoint offset target dirct)
+(defun subfun( en / xobj vardata safedata inspoint refpoint offset target dirct userucs AA u d l r x y)
     (vl-load-com)
     (setq xobj (vlax-ename->vla-object en))
     (setq vardata (vlax-get-property xobj 'InsertionPoint))
