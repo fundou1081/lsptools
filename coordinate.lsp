@@ -115,7 +115,6 @@
         )
         ;;else
         (progn
-            
             (setq endata (subst new old endata))
         )
     )
@@ -143,3 +142,33 @@
     )
     (setvar "cmdecho" 1)
 )
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun openExcelfile( / exlfile)
+
+    (setq sheetName "CADInput")
+    (setq cellRange "O3:O12")
+
+    (vl-load-com)
+    (setq exlfile (getfiled "Open paneldata file" "" "xlsx" 16))
+    (setq exlobj  (vlax-get-or-create-object "Excel.Application"))
+    (setq wbobjs (vlax-get-property exlobj "WorkBooks"))
+    (setq wbobj  (vlax-invoke-method wbobjs "open" exlfile))
+    (setq shobjs (vlax-get-property wbobj "Sheets"))
+    (setq shobj  (vlax-get-property  shobjs "Item" sheetName))
+    (setq cellobjs (vlax-get-property shobj "Range" cellRange))
+    (setq cellVariants (vlax-get-property cellobjs 'Value))
+    (setq cellList (vlax-safearray->list (vlax-variant-value cellVariants)))
+
+
+    (vlax-invoke-method wbobj "Close" )
+    (vlax-release-object exlfile)
+    (setq result cellList)
+
+)
+
+
+
