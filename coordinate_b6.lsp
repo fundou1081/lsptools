@@ -76,6 +76,7 @@
         (setq offset (list -5 -5))
         (drawCoords refpoint target offset dirct)
 
+        (setq i (+ i 1))
     )
 
     ;; down points
@@ -101,6 +102,7 @@
         (setq offset (list -5 5))
         (drawCoords refpoint target offset dirct)
 
+        (setq i (+ i 1))
     )
 
 
