@@ -104,29 +104,6 @@
     )
 
 
-
-
-
-
-
-
-
-
-    (setq target (list (+ x r) (+ y u) ))
-    (setq dirct "mr")
-    (setq offset (list -5 -5))
-    (drawCoords refpoint target offset dirct)
-
-
-
-
-    ;; right down point
-    (setq target (list (+ x r) (- 0 y d) ))
-    (setq dirct "mr")
-    (setq offset (list -5 5))
-    (drawCoords refpoint target offset dirct)
-
-
 )
 
 (defun drawCoords ( refpoint target offset dirct / rx ry XYZ strx stry strp dx dy XYZ2 en obj)
