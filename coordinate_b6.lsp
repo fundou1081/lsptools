@@ -52,6 +52,9 @@
     (setq p8x -23.372 p8y -1.305 )
     (setq p9x -26.602 p9y -4.433 )
 
+    ;; x10
+    (setq x (/ x 10))
+    (setq y (/ y 10))
 
     ;; up points
     (setq pLUx (list p1x p2x p3x))
@@ -63,25 +66,39 @@
         ;; left up points
         (setq l (nth i pLUx))
         (setq u (nth i pLUy))
+        ;; x10
+        (setq l (/ l 10))
+        (setq u (/ u 10))
+
         (setq target (list (- 0 x l) (+ y u)))
         (setq dirct "ml")
-        (setq offset (list 5 -5))
+        (setq offset (list 0.5 -0.5))
+        (if (= i 0) (setq offset (list 0.5 -0.5)) )
+        (if (= i 1) (setq offset (list 0.5 -0.5)) )
+        (if (= i 2) (setq offset (list 0.5 -1.0)) )
         (drawCoords refpoint target offset dirct)    
 
         ;; right up points
         (setq r (nth i pLUx))
         (setq u (nth i pLUy))
+        ;; x10
+        (setq r (/ r 10))
+        (setq u (/ u 10))
+
         (setq target (list (+ x r) (+ y u) ))
         (setq dirct "mr")
-        (setq offset (list -5 -5))
+        (setq offset (list -0.5 -0.5))
+        (if (= i 0) (setq offset (list -0.5 -0.5)) )
+        (if (= i 1) (setq offset (list -0.5 -0.5)) )
+        (if (= i 2) (setq offset (list -0.5 -1.0)) )
         (drawCoords refpoint target offset dirct)
 
         (setq i (+ i 1))
     )
 
     ;; down points
-    (setq pLDx (list p4x p5x p6x p7x p8x p9x))
-    (setq pLDy (list p4y p5y p6y p7y p8y p9y))   
+    (setq pLDx (list p4x p5x p6x ))
+    (setq pLDy (list p4y p5y p6y ))   
 
     (setq pn (length pLDx))
     (setq i 0)
@@ -89,21 +106,76 @@
         ;; left down points
         (setq l (nth i pLDx))
         (setq d (nth i pLDy))
+        ;; x10
+        (setq l (/ l 10))
+        (setq d (/ d 10))
+        
         (setq target (list (- 0 x l) (- 0 y d) ))    
         (setq dirct "ml")
-        (setq offset (list 5 5))
+        (setq offset (list 0.5 0.5))
+        (if (= i 0) (setq offset (list 0.5 1.0)) )
+        (if (= i 1) (setq offset (list 0.5 0.5)) )
+        (if (= i 2) (setq offset (list 0.25 0.5)) )
         (drawCoords refpoint target offset dirct) 
 
         ;; right down points
         (setq r (nth i pLDx))
         (setq d (nth i pLDy))
+        ;; x10
+        (setq r (/ r 10))
+        (setq d (/ d 10))
+
         (setq target (list (+ x r) (- 0 y d) ))
         (setq dirct "mr")
-        (setq offset (list -5 5))
+        (setq offset (list -0.5 0.5))
+        (if (= i 0) (setq offset (list -0.5 1.0)) )
+        (if (= i 1) (setq offset (list -0.5 0.5)) )
+        (if (= i 2) (setq offset (list -0.25 0.5)) )
         (drawCoords refpoint target offset dirct)
 
         (setq i (+ i 1))
     )
+
+    ;; mid points
+    (setq pMDx (list  p7x p8x p9x))
+    (setq pMDy (list  p7y p8y p9y))   
+
+    (setq pn (length pMDx))
+    (setq i 0)
+    (while (< i pn)
+        ;; left down points
+        (setq l (nth i pMDx))
+        (setq d (nth i pMDy))
+        ;; x10
+        (setq l (/ l 10))
+        (setq d (/ d 10))
+        
+        (setq target (list (- 0 x l) (- 0 y d) ))    
+        (setq dirct "mr")
+        (setq offset (list -0.5 0.5))
+        (if (= i 0) (setq offset (list -0.25 0.25)) )
+        (if (= i 1) (setq offset (list -0.5 0.5)) )
+        (if (= i 2) (setq offset (list -0.5 0.5)) )
+        (drawCoords refpoint target offset dirct) 
+
+        ;; right down points
+        (setq r (nth i pMDx))
+        (setq d (nth i pMDy))
+        ;; x10
+        (setq r (/ r 10))
+        (setq d (/ d 10))
+
+        (setq target (list (+ x r) (- 0 y d) ))
+        (setq dirct "ml")
+        (setq offset (list 0.5 0.5))
+        (if (= i 0) (setq offset (list 0.25 0.25)) )
+        (if (= i 1) (setq offset (list 0.5 0.5)) )
+        (if (= i 2) (setq offset (list 0.5 0.5)) )
+        (drawCoords refpoint target offset dirct)
+
+        (setq i (+ i 1))
+    )
+
 
 
 )
@@ -118,8 +190,12 @@
     (setq dy (cadr offset)) 
     (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
 
-    (setq strx (rtos rx 2 3))
-    (setq stry (rtos ry 2 3))
+        ;; x10
+        (setq rx10 (* rx 10))
+        (setq ry10 (* ry 10)) 
+
+    (setq strx (rtos rx10 2 3))
+    (setq stry (rtos ry10 2 3))
     (setq strp (strcat "X=" strx "\n" "Y=" stry))
 
     (setq dx (car offset ) ) 
@@ -127,13 +203,17 @@
     (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
 
     (command "line" XYZ XYZ2 "")
+    (setq en (entlast))
+    (setq obj (vlax-ename->vla-object en))
+    (vlax-put-property obj 'Color 6)
+    (setq a 0)
 
     (command "mtext" XYZ2 "j" dirct XYZ2 strp "")
 
     ;;(command "mleader" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
     (setq en (entlast))
     (setq obj (vlax-ename->vla-object en))
-    (vlax-put-property obj 'Height 1.0)
+    (vlax-put-property obj 'Height 0.06)
 
     (if (= dirct "mr")
         (progn
