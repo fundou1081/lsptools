@@ -36,35 +36,96 @@
     (setq refpoint (list (- (car inspoint) (car userucs)) (- (cadr inspoint) (cadr userucs))))
 
     (setq AA (list 63.504 134.064))
-    (setq u 2.5)
-    (setq d 2.5)
-    (setq l 3.3)
-    (setq r 3.3)
 
     (setq x (/ (car AA) 2 ))
     (setq y (/ (cadr AA) 2 ))
-    
 
-    ;; left up point
-    (setq target (list (- 0 x l) (+ y u)))
-    (setq dirct "ml")
-    (setq offset (list 5 -5))
-    (drawCoords refpoint target offset dirct)
-    ;; right up point
+    (setq p1x -0.154 p1y 0.87 )
+    (setq p2x 0.56 p2y -1.65 )
+    (setq p3x 0.56 p3y -3.05 )
+
+    (setq p4x 0.56 p4y -5.839 )
+    (setq p5x 0.56 p5y -4.439 )
+    (setq p6x -3.993 p6y 0.5 )
+
+    (setq p7x -22.371 p7y 0.5 )
+    (setq p8x -23.372 p8y -1.305 )
+    (setq p9x -26.602 p9y -4.433 )
+
+
+    ;; up points
+    (setq pLUx (list p1x p2x p3x))
+    (setq pLUy (list p1y p2y p3y))   
+
+    (setq pn (length pLUx))
+    (setq i 0)
+    (while (< i pn)
+        ;; left up points
+        (setq l (nth i pLUx))
+        (setq u (nth i pLUy))
+        (setq target (list (- 0 x l) (+ y u)))
+        (setq dirct "ml")
+        (setq offset (list 5 -5))
+        (drawCoords refpoint target offset dirct)    
+
+        ;; right up points
+        (setq r (nth i pLUx))
+        (setq u (nth i pLUy))
+        (setq target (list (+ x r) (+ y u) ))
+        (setq dirct "mr")
+        (setq offset (list -5 -5))
+        (drawCoords refpoint target offset dirct)
+
+    )
+
+    ;; down points
+    (setq pLDx (list p4x p5x p6x p7x p8x p9x))
+    (setq pLDy (list p4y p5y p6y p7y p8y p9y))   
+
+    (setq pn (length pLDx))
+    (setq i 0)
+    (while (< i pn)
+        ;; left down points
+        (setq l (nth i pLDx))
+        (setq d (nth i pLDy))
+        (setq target (list (- 0 x l) (- 0 y d) ))    
+        (setq dirct "ml")
+        (setq offset (list 5 5))
+        (drawCoords refpoint target offset dirct) 
+
+        ;; right down points
+        (setq r (nth i pLDx))
+        (setq d (nth i pLDy))
+        (setq target (list (+ x r) (- 0 y d) ))
+        (setq dirct "mr")
+        (setq offset (list -5 5))
+        (drawCoords refpoint target offset dirct)
+
+    )
+
+
+
+
+
+
+
+
+
+
     (setq target (list (+ x r) (+ y u) ))
     (setq dirct "mr")
     (setq offset (list -5 -5))
     (drawCoords refpoint target offset dirct)
+
+
+
+
     ;; right down point
     (setq target (list (+ x r) (- 0 y d) ))
     (setq dirct "mr")
     (setq offset (list -5 5))
     (drawCoords refpoint target offset dirct)
-    ;; left down point
-    (setq target (list (- 0 x l) (- 0 y d) ))    
-    (setq dirct "ml")
-    (setq offset (list 5 5))
-    (drawCoords refpoint target offset dirct)
+
 
 )
 
