@@ -35,11 +35,11 @@
 
     (setq refpoint (list (- (car inspoint) (car userucs)) (- (cadr inspoint) (cadr userucs))))
 
-    (setq AA (list 63.504 134.064))
-    (setq u 2.5)
-    (setq d 2.5)
-    (setq l 3.3)
-    (setq r 3.3)
+    (setq AA (list 134.784 67.392 ))
+    (setq u 0.8)
+    (setq d 0.8)
+    (setq l 0.575)
+    (setq r 1.725)
 
     (setq x (/ (car AA) 2 ))
     (setq y (/ (cadr AA) 2 ))
@@ -134,7 +134,7 @@
 
 (defun c:pt()
     (setvar "cmdecho" 0)
-    (while (setq pt1 (getpoint "\n请指定点位置:"))
+    (while (setq pt1 (getpoint "\nselect point:"))
         (setq point_x (rtos (car pt1) 2 2))
         (setq point_y (rtos (cadr pt1) 2 2))
         (setq point_z (rtos (caddr pt1) 2 2))
