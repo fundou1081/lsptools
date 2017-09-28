@@ -1,9 +1,6 @@
 ;;; mark
-
 ;;; haobo
-
 ;;; read excel
-
 
 (defun c:drawmark( / cmvar osvar blkData elsSheet )
 
@@ -15,7 +12,7 @@
     (setq blkData (getBlockData 2 10))
     ;;; blkname basepointX basepointY
 
-    (setq elsSheet (getstring T "请输入EXCEL工作表名称: "))(prin1)
+    (setq elsSheet (getstring T "请输入EXCEL工作表名称:"))(prin1)
     (setq elsArea (getElsArea))
     ;;; excel area; lx; ly 
     (setq markPoints (getExcelData elsSheet (car elsArea)))
@@ -91,7 +88,7 @@
 
 (defun getBlockData( s1 s2 / result ss entdata data1 data2 data3 )
     ;;;
-    (prompt "请选择块")(prin1)
+    (prompt "请选择块: ")(prin1)
     (setq ss (ssget))
     (setq entdata (entget (ssname ss 0)))
     ;;;选择集 选择集中对象 对象属性
@@ -185,14 +182,14 @@
             (cond 
                 ((= 0 (rem cmk xmk)) (progn (setq result 15)));;左上   右偏
                 ((= (- xmk 1) (rem cmk xmk)) (progn (setq result 18)));; 右上     左偏
-                (t (progn (setq result 2)));；下             上偏
+                (t (progn (setq result 2)));;下             上偏
             )
         )
         (progn  ;; 上
             (cond 
                 ((= 0 (rem cmk xmk)) (progn (setq result 15)));;左上   右偏
                 ((= (- xmk 1) (rem cmk xmk)) (progn (setq result 18)));; 右上     左偏
-                (t (progn (setq result 6)));；上             下偏
+                (t (progn (setq result 6)));;上             下偏
             )
         )               
         )                   
@@ -240,7 +237,7 @@
             (cond 
                 ((= 0 (rem cmk xmk)) (progn (setq result 15)));;左上   右偏
                 ((= (- xmk 1) (rem cmk xmk)) (progn (setq result 18)));; 右上     左偏
-                (t (progn (setq result 6)));；上             下偏
+                (t (progn (setq result 6)));;上             下偏
             )            
         )
         ;;else            
@@ -278,7 +275,7 @@
             (cond 
                 ((= 0 (rem cmk xmk)) (progn (setq result 15)));;左   右下偏
                 ((= (- xmk 1) (rem cmk xmk)) (progn (setq result 18)));; 右     左下偏
-                (t (progn (setq result 6)));；     下偏
+                (t (progn (setq result 6)));;     下偏
             )             
     )
     )    
