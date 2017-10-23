@@ -78,10 +78,12 @@ first002:dialog{
         alignment=centered;
     }
     :edit_box{
+        key=box1;
         label="image name";
         edit_width=10;
     }
     :edit_box{
+        key=box2;
         label="date";
         edit_width=10;
     }
