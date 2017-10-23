@@ -70,3 +70,22 @@ end_image
 
 
 */
+
+first002:dialog{
+    label="Input dialog";
+    :text{
+        label="New one 3";
+        alignment=centered;
+    }
+    :edit_box{
+        label="image name";
+        edit_width=10;
+    }
+    :edit_box{
+        label="date";
+        edit_width=10;
+    }
+    spacer_1;
+    ok_cancel;
+}
+
