@@ -288,7 +288,7 @@
     (setq result entdata)
 )
 
-(defun chgFrameColor( colorId markId markPrpt shift / ss entid entdata newr mark)
+(defun chgFrameColorOld( colorId markId markPrpt shift / ss entid entdata newr mark)
     ;;; the frame must be the last draw
     (setq ss (ssget "L"));;; entsel 选择最后绘制的对象
     (setq entid (ssname ss 0))
@@ -298,3 +298,44 @@
     (setq entdata (newsubst newr mark shift entdata));;;移动位
     (entmod entdata);;;重新绘制
 )
+
+(defun chgFrameColor( colorId markId markPrpt shift / ss entid entdata newr mark)
+    ;;; the frame must be the last draw
+    (setq ss (ssget "L"));;; entsel 选择最后绘制的对象
+    (setq entid (ssname ss 0))
+    (chcode entid 62 5)
+)
+
+(defun chcode( en code data / endata)
+    
+    (setq endata (entget en))
+    (setq old (assoc code endata))
+    (setq new (cons code data))
+    (if (= old nil)
+        (progn
+            (setq endata (cons new endata))
+        )
+        ;;else
+        (progn
+            (setq endata (subst new old endata))
+        )
+    )
+    (entmod endata)
+)
+
+(defun test()
+    (setq en (entsel))
+    (setq endata (entget (car en)))
+
+
+)
+(defun test2()
+    (setq en (entsel))
+    (setq obj (vlax-ename->vla-object (car en)))
+    (vlax-dump-object obj)
+    (vlax-put-property obj 'Color 6)
+
+
+)
+
+
