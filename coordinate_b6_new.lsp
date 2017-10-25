@@ -42,10 +42,23 @@
     (setq AAX (nth 2 (nth 0 dataList)))
     (setq AAY (nth 2 (nth 0 dataList)))
 
-    (setq AA (list 63.504 134.064))
+    ;(setq AA (list 63.504 134.064))
 
-    (setq x (/ (car AA) 2 ))
-    (setq y (/ (cadr AA) 2 ))
+    (setq x (/ AAX 2 ))
+    (setq y (/ AAY 2 ))
+
+    (setq i 1)
+    (while (<= i coords)
+
+        (setq px (nth 0 (nth i dataList)))
+        (setq py (nth 1 (nth i dataList)))
+        (setq pangle (nth 2 (nth i dataList)))
+        (setq pdist (nth 3 (nth i dataList)))
+    
+    
+        (setq i (+ i 1))
+    )
+
 
     (setq p1x -0.154 p1y 0.87 )
     (setq p2x 0.56 p2y -1.65 )
