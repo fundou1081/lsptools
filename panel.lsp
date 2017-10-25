@@ -1,4 +1,4 @@
-;;; Panel layout
+﻿;;; Panel layout
 ;;; haobo
 ;;; v2017
 ;;; read excel
@@ -14,7 +14,7 @@
 )
 
 ;;; panel layout
-(defun c:pl(/ AH AV u d l r dpad gpad pblk) 
+(defun c:pl( / AH AV u d l r dpad gpad pblk) 
     
     (setq AH (vlax-variant-value (nth 0 (nth 0 (nth 2 panelV)))))
     (setq AV (vlax-variant-value (nth 0 (nth 1 (nth 2 panelV)))))
@@ -27,12 +27,12 @@
     (setq pblk (vlax-variant-value (nth 0 (nth 8 (nth 2 panelV)))))
 
     (drawLayout AH AV u d l r dpad gpad pblk)
-    ;;;     AH  AV u  d   l r dpad gpad blk
+    ;;;         AH AV u d l r dpad gpad blk
     (prin1)
 )
 
 ;;; Q panel layout
-(defun c:ql(/ PH PV m n dm dn u d l r Isrotate)
+(defun c:ql( / PH PV m n dm dn u d l r Isrotate)
 
     (setq PH (vlax-variant-value (nth 0 (nth 0 (nth 1 panelV)))))
     (setq PV (vlax-variant-value (nth 0 (nth 1 (nth 1 panelV)))))
@@ -55,7 +55,7 @@
 )
 
 ;;; Glass layout
-(defun c:gl(/ QH QV m n dm dn u d l r )
+(defun c:gl( / QH QV m n dm dn u d l r )
 
     (setq RFQflag (vlax-variant-value (nth 0 (nth 11 (nth 1 panelV)))))
     (setq RFQflag (fix RFQflag))
@@ -75,12 +75,11 @@
     ;;;       QH   QV  m n dmdn u d l   r  Isrotate IsG
     ;;; move glass to (0 0)
 
-
     (prin1)
 )
 
 ;;;=====================================================================
-(defun drawLayout(AH AV u d l r dpad gpad pblk / ss entid entdata newr mark os AA1 AA2 CF1 CF2 PNL1 PNL2 AACenter1 AACenter2 AACenter)
+(defun drawLayout( AH AV u d l r dpad gpad pblk / en ss os osColor AA1 AA2 CF1 CF2 PNL1 PNL2 AACenter1 AACenter2 AACenter)
     ;;; AA区尺寸 H 水平方向 V 竖直方向
     ;;; AA区到CF 上 下 左 右 的距离 u d l r 
     ;;; CF到panel下边的距离 dpad
@@ -88,6 +87,7 @@
     (command "zoom" "e");;;显示不全，生成的块会有问题
     (setq os (getvar "osmode"));;取得当前捕捉设置
     (setvar "osmode" 0);;关闭捕捉
+    (setq osColor (getvar "Cecolor"))
     
     (setq AA1 (list l (+ dpad d)))
     (setq AA2 (list (+ l AH) (+ dpad d AV)))
@@ -97,40 +97,26 @@
     (setq PNL2 (list (+ (car CF2) gpad) (cadr CF2)))
     
 
-    ;;; 关闭画图捕捉 否则不准
+    ;;; 关闭画图捕捉 否则不准 配置颜色
     
+    (setvar "cecolor" "bylayer")
     (command "zoom" "a")
-
     (command "rectang" PNL1 PNL2)
     (command "rectang" CF1 CF2)
+    (setvar "cecolor" "5"); color blue
     (command "rectang" AA1 AA2)
-
-    ;;; 更改颜色属性
-    (chgFrameColor 5 410 "0" 2 )
-
-    ;;; (setq entdata (entget (ssname (ssget) 0)))
-
-    ;;; 属性是点对元素
-    ;;; (setq test '(1 2)) 点元素
-    ;;; (setq test '(1 . 2))点对元素
-    ;;; (setq b (cons 5 b)) 添加元素
-    ;;; (setq b (cons '(5) b)) 多一个维度
-    ;;; (cdr (assoc 90 (entget entid))) 按群码取值
-
-    ;;; 属性列表中 (62 . 5) 对应颜色
-    ;;; 数字对应顺序 byblock 红 黄 绿 青 蓝 洋红 白 对应 0 1 2 3 4 5 6 7
-    ;;; bylayer 该属性空缺
+    
 
     (setq ss (ssget "w" PNL1 PNL2 ))
     (setq AACenter1 (/ (+ (car AA1 ) (car AA2) ) 2.0))
     (setq AACenter2 (/ (+ (cadr AA1 ) (cadr AA2) ) 2.0))
-
     (setq AACenter (list AACenter1 AACenter2))
     (command "-block" pblk AACenter ss "");;;创建块 块名称 块基点 图形集 
     ;;;创建块之后会删除原图形，不再次插入的话图形不在显示
-    (command "-insert" pblk AACenter 1 1 0);;;插入块 插入点 块基点 X比例因子 Y比例因子 角度
+    (command "-insert" pblk AACenter 1 1 0 "");;;插入块 插入点 块基点 X比例因子 Y比例因子 角度
     ;;;插入点为pt，原位插入
     
+    (setvar "cecolor" osColor)
     (setvar "osmode" os);;绘图结束还原捕捉设置
     (command "zoom" "e")
     (prin1)
@@ -138,16 +124,16 @@
 
 ;;;=====================================================================
 
-(defun arrayLayout(PH PV m n dm dn u d l r Isrotate IsG RFQflag / os ss lupt MM NN Q1 Q2 Q2X Q2Y )
+(defun arrayLayout(PH PV m n dm dn u d l r Isrotate IsG RFQflag / en os osColor ss lupt MM NN Q1 Q2 Q2X Q2Y )
 
     (setvar "cmdecho" 0)
     (command "zoom" "a");;;显示不全，生成的块会有问题
     (setq os (getvar "osmode"));;;取得当前捕捉设置
     (setvar "osmode" 0);;;关闭捕捉
+    (setq osColor (getvar "Cecolor"))
     
     (if (= Isrotate 1)
         (progn
-
                 (setq MM (+ dm PH))         ;;; 行间距
                 (setq NN (+ dn PV))         ;;; 列间距
                 ;;; 计算QPanellayout
@@ -184,38 +170,39 @@
     (command "array" ss "" "r" m n MM NN)
     ;;; 行 列 行间距 列间距
 
-
-
     (if (= IsG 1) 
         (progn
-                ;;; 画 Qpanel
-                (if (= RFQflag 1)
+            ;;; 画 Qpanel
+            (if (= RFQflag 1)
                 (progn
                     (setq Q1 '(0 0))
                     (setq Q2 '(1300 1100))
+                    (setvar "cecolor" "bylayer")
                     (command "rectang" Q1 Q2)
                 )
                 (progn
+                    (setvar "cecolor" "bylayer")
                     (command "rectang" Q1 Q2)
                 )
-                )
-        
-                (command "zoom" "a")
-                (setq ss (ssget "w" Q1 Q2))
-                (setq Q2X (- 0 (/ Q2X 2.0)))
-                (setq Q2Y (- 0 (/ Q2Y 2.0)))
-                (command "move" ss "" '(0 0) (list Q2X Q2Y)) ;;; 移动到坐标中心
+            )
+    
+            (command "zoom" "a")
+            (setq ss (ssget "w" Q1 Q2))
+            (setq Q2X (- 0 (/ Q2X 2.0)))
+            (setq Q2Y (- 0 (/ Q2Y 2.0)))
+            (command "move" ss "" '(0 0) (list Q2X Q2Y)) ;;; 移动到坐标中心
         
         )
         (progn
             (if (= RFQflag 0) 
-            (progn
-                (command "rectang" Q1 Q2)
-                (chgFrameColor 3 410 "0" 2 ))
+                (progn    
+                    (setvar "cecolor" "3"); color green
+                    (command "rectang" Q1 Q2)
+                )
             )
         )
     )
-
+    (setvar "cecolor" osColor)
     (setvar "osmode" os);;;绘图结束还原捕捉设置
     (command "zoom" "e");;;显示不全，生成的块会有问题
     (prin1)
@@ -237,105 +224,3 @@
 	(setq result ttt)  ;;; panelV 为全局变量
     ;;(vlax-variant-value (nth 3 (nth 0 panelV)))
 )
-
-(defun newsubst ( newr mark shift entdata / i tmp result)
-    ;;; newr 要更改的属性
-    ;;; mark 旧属性或相邻属性
-    ;;; shift 与相邻属性漂移距离 非负
-    ;;; 属性列表
-    (setq tmp (car entdata));;;get the first property
-    (if (= shift 0) 
-        (progn 
-            (setq entdata (subst newr mark entdata))
-            (setq tmp (not tmp)) 
-        )
-    )
-    
-    (while tmp
-        (if (= (car mark) (car tmp))  
-            (progn
-                (setq i 0)
-                (while (< i shift) 
-                    
-                    (setq savedata (cons tmp savedata));;; save mark - dst property
-                    (setq entdata (cdr entdata));;; delete first property   
-                    (setq tmp (car entdata))
-                    (setq i (+ 1 i))
-                )
-
-                (setq entdata (cons newr entdata));;; write new property
-                
-                (setq tmp (car savedata))
-                (while tmp
-                    (setq entdata (cons tmp entdata))
-                    (setq savedata (cdr savedata))
-                    (setq tmp (car savedata))
-                )
-                (setq shift 0)
-            )
-        )
-
-        (if (> shift 0)
-            (progn
-                (setq savedata (cons tmp savedata));;; save current property
-                (setq entdata (cdr entdata));;; delete first property
-                (setq tmp (car entdata));;;get new first property
-            )
-        )
-
-    )
-
-    (setq result entdata)
-)
-
-(defun chgFrameColorOld( colorId markId markPrpt shift / ss entid entdata newr mark)
-    ;;; the frame must be the last draw
-    (setq ss (ssget "L"));;; entsel 选择最后绘制的对象
-    (setq entid (ssname ss 0))
-    (setq entdata (entget entid))
-    (setq newr (cons 62 colorId));;; 5 对应蓝色 ;;;(setq newr (cons 群码 属性值))
-    (setq mark (cons markId markPrpt))
-    (setq entdata (newsubst newr mark shift entdata));;;移动位
-    (entmod entdata);;;重新绘制
-)
-
-(defun chgFrameColor( colorId markId markPrpt shift / ss entid entdata newr mark)
-    ;;; the frame must be the last draw
-    (setq ss (ssget "L"));;; entsel 选择最后绘制的对象
-    (setq entid (ssname ss 0))
-    (chcode entid 62 5)
-)
-
-(defun chcode( en code data / endata)
-    
-    (setq endata (entget en))
-    (setq old (assoc code endata))
-    (setq new (cons code data))
-    (if (= old nil)
-        (progn
-            (setq endata (cons new endata))
-        )
-        ;;else
-        (progn
-            (setq endata (subst new old endata))
-        )
-    )
-    (entmod endata)
-)
-
-(defun test()
-    (setq en (entsel))
-    (setq endata (entget (car en)))
-
-
-)
-(defun test2()
-    (setq en (entsel))
-    (setq obj (vlax-ename->vla-object (car en)))
-    (vlax-dump-object obj)
-    (vlax-put-property obj 'Color 6)
-
-
-)
-
-

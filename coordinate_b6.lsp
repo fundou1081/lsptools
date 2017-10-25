@@ -196,7 +196,7 @@
 
     (setq strx (rtos rx10 2 3))
     (setq stry (rtos ry10 2 3))
-    (setq strp (strcat "X=" strx "\n" "Y=" stry))
+    (setq strp (strcat "X=" strx "\r\n" "Y=" stry))
 
     (setq dx (car offset ) ) 
     (setq dy (cadr offset)) 
@@ -290,5 +290,53 @@
 
 )
 
+(defun readData( / result )
+    ;;cfg
+    (setq sheetName "SealData")
+    ;;open excel
+    (vl-load-com)
+	(setq XLobj (vlax-create-object "Excel.Application"));
+	(vla-put-visible XLobj 1);
+	(setq wbobj (vlax-invoke-method (vlax-get-property XLobj "WorkBooks") "Open" (getfiled "Open Excel file" "" "xlsx" 20)));
+	(setq sheetobj (vlax-get-property wbobj "Sheets"))
+	(setq sheet  (vlax-get-property  sheetobj "Item" sheetName))
+	(setq cells (vlax-get-property  sheet "Cells"))
+
+    ;;异形屏幕参数设置
+    (setq fontsize (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 3 8)) "Value")));;字体大小
+    (setq fontColor (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 4 8)) "Value")));;字体颜色
+    (setq coords (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 5 8)) "Value")));;坐标个数
+    (setq AAX (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 5 8)) "Value")));;AA X 尺寸
+    (setq AAY (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 5 8)) "Value")));;AA Y 尺寸
+
+    (setq coordsList nil)
+    (setq coords (fix coords))
+    (setq coordi 0)
+    (while (< coordi coords)
+        (setq coordsList (append coordsList (list (readCoorData cells coordi))))
+        (setq coordi (+ coordi 1))
+    )
+
+    (nth 0 (nth 0 coordsList))
+
+
+    ;;close Excel
+    (vlax-invoke-method wbobj "Close" )
+    (vlax-release-object XLobj)
+    ;;return 
+    (setq result coordsList)
+)
+
+(defun readCoorData( cells n / px py shiftAngle shiftDist i)
+    ;; start at 13 8
+    ;; data = X Y angle dist
+    ;;        8 9   11    12
+    (setq i (+ 13 n))
+    (setq px (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" i 8)) "Value")));; X
+    (setq py (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" i 9)) "Value")));; Y
+    (setq shiftAngle (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" i 11)) "Value")));; angle
+    (setq shiftDist (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" i 12)) "Value")));; shift
+    (setq result (list px py shiftAngle shiftDist))
+)
 
 

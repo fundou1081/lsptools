@@ -40,9 +40,25 @@
 	(setq rg (vlax-get-property  sh "Range" RangeStr));;;;用指定的字符串创建工作表范围对象 
 	(setq vvv (vlax-get-property rg 'Value));;;获取范围对象的值
 	(setq ttt (vlax-safearray->list (vlax-variant-value vvv))) ;;;转换为list
+
 	(vlax-invoke-method wb "Close" );;;关闭工作簿
 	;;(vlax-invoke-method  xl "Quit");;;退出excel对象       会关闭其他excel 禁用
 	(vlax-release-object xl);;;释放excel对象
 	(setq result ttt)  ;;; panelV 为全局变量
     ;;(vlax-variant-value (nth 3 (nth 0 panelV)))
 )
+
+(defun excelFunTest()
+	(setq XLobj (vlax-create-object "Excel.Application"));
+	(vla-put-visible XLobj 1);
+	(setq wbobj (vlax-invoke-method (vlax-get-property XLobj "WorkBooks") "Open" (getfiled "Open Excel file" "" "xlsx" 20)));
+
+	(setq sheetobj (vlax-get-property wbobj "Sheets"))
+	(setq sheet  (vlax-get-property  sheetobj "Item" "Sheet1"))
+	(setq cells (vlax-get-property  sheet "Cells"))
+	(setq range (vlax-variant-value (vlax-get-property  cells "Item" 1 1)))
+	(Vlax-Put-Property range 'Value2 "789" )
+
+)
+
+

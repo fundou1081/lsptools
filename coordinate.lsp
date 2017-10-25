@@ -163,7 +163,6 @@
     (setq cellVariants (vlax-get-property cellobjs 'Value))
     (setq cellList (vlax-safearray->list (vlax-variant-value cellVariants)))
 
-
     (vlax-invoke-method wbobj "Close" )
     (vlax-release-object exlfile)
     (setq result cellList)
