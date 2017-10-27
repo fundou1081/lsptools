@@ -193,7 +193,7 @@
     (setq ry (+ (cadr refpoint) (cadr target) ) )
     (setq XYZ (list rx ry 0))
 
-    (setq dx (car offset ) ) 
+    (setq dx (car offset )) 
     (setq dy (cadr offset)) 
     (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
 

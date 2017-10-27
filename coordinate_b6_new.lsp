@@ -5,7 +5,7 @@
     (setq osvar (getvar "osmode"))
     (setvar "osmode" 0)
 
-    (setq ss (ssget ))
+    (setq ss (ssget "Please select block drawing: "))
     
     (command "zoom" "e")
 
@@ -19,13 +19,13 @@
         )    
         (setq n (+ 1 n))
     )
-
+    (command "zoom" "e")
     (setvar "osmode" osvar);; 绘图结束还原捕捉设置
     (setvar "cmdecho" cmvar)
 )
 
 
-(defun subfun( en / xobj vardata safedata inspoint refpoint offset target dirct userucs AA u d l r x y)
+(defun subfun( en / xobj vardata safedata inspoint userucs refpoint dataList fontSize fontColor coords AAX AAY x y i px py pangle pdist target angle offset angleP1 angleP2 dirct)
     (vl-load-com)
     (setq xobj (vlax-ename->vla-object en))
     (setq vardata (vlax-get-property xobj 'InsertionPoint))
@@ -42,8 +42,6 @@
     (setq AAX (nth 2 (nth 0 dataList)))
     (setq AAY (nth 2 (nth 0 dataList)))
 
-    ;(setq AA (list 63.504 134.064))
-
     (setq x (/ AAX 2 ))
     (setq y (/ AAY 2 ))
 
@@ -54,197 +52,57 @@
         (setq py (nth 1 (nth i dataList)))
         (setq pangle (nth 2 (nth i dataList)))
         (setq pdist (nth 3 (nth i dataList)))
+
+        (setq target (list px py 0))
+        (setq angle (angtof (rtos pangle 2 6)))
+        (setq offset (polar target angle pdist))
+
+        (setq angleP1 (angtof "90"))
+        (setq angleP2 (angtof "270"))
+        (if (and (>= angle angleP1) (< angle angleP2))
+            (setq dirct "ml")
+            ;else
+            (setq dirct "mr")
+        )
     
-    
+        (drawCoords fontSize fontColor refpoint target offset dirct)  
         (setq i (+ i 1))
     )
-
-
-    (setq p1x -0.154 p1y 0.87 )
-    (setq p2x 0.56 p2y -1.65 )
-    (setq p3x 0.56 p3y -3.05 )
-
-    (setq p4x 0.56 p4y -5.839 )
-    (setq p5x 0.56 p5y -4.439 )
-    (setq p6x -3.993 p6y 0.5 )
-
-    (setq p7x -22.371 p7y 0.5 )
-    (setq p8x -23.372 p8y -1.305 )
-    (setq p9x -26.602 p9y -4.433 )
-
-    ;; x10
-    (setq x (/ x 10))
-    (setq y (/ y 10))
-
-    ;; up points
-    (setq pLUx (list p1x p2x p3x))
-    (setq pLUy (list p1y p2y p3y))   
-
-    (setq pn (length pLUx))
-    (setq i 0)
-    (while (< i pn)
-        ;; left up points
-        (setq l (nth i pLUx))
-        (setq u (nth i pLUy))
-        ;; x10
-        (setq l (/ l 10))
-        (setq u (/ u 10))
-
-        (setq target (list (- 0 x l) (+ y u)))
-        (setq dirct "ml")
-        (setq offset (list 0.5 -0.5))
-        (if (= i 0) (setq offset (list 0.5 -0.5)) )
-        (if (= i 1) (setq offset (list 0.5 -0.5)) )
-        (if (= i 2) (setq offset (list 0.5 -1.0)) )
-        (drawCoords refpoint target offset dirct)    
-
-        ;; right up points
-        (setq r (nth i pLUx))
-        (setq u (nth i pLUy))
-        ;; x10
-        (setq r (/ r 10))
-        (setq u (/ u 10))
-
-        (setq target (list (+ x r) (+ y u) ))
-        (setq dirct "mr")
-        (setq offset (list -0.5 -0.5))
-        (if (= i 0) (setq offset (list -0.5 -0.5)) )
-        (if (= i 1) (setq offset (list -0.5 -0.5)) )
-        (if (= i 2) (setq offset (list -0.5 -1.0)) )
-        (drawCoords refpoint target offset dirct)
-
-        (setq i (+ i 1))
-    )
-
-    ;; down points
-    (setq pLDx (list p4x p5x p6x ))
-    (setq pLDy (list p4y p5y p6y ))   
-
-    (setq pn (length pLDx))
-    (setq i 0)
-    (while (< i pn)
-        ;; left down points
-        (setq l (nth i pLDx))
-        (setq d (nth i pLDy))
-        ;; x10
-        (setq l (/ l 10))
-        (setq d (/ d 10))
-        
-        (setq target (list (- 0 x l) (- 0 y d) ))    
-        (setq dirct "ml")
-        (setq offset (list 0.5 0.5))
-        (if (= i 0) (setq offset (list 0.5 1.0)) )
-        (if (= i 1) (setq offset (list 0.5 0.5)) )
-        (if (= i 2) (setq offset (list 0.25 0.5)) )
-        (drawCoords refpoint target offset dirct) 
-
-        ;; right down points
-        (setq r (nth i pLDx))
-        (setq d (nth i pLDy))
-        ;; x10
-        (setq r (/ r 10))
-        (setq d (/ d 10))
-
-        (setq target (list (+ x r) (- 0 y d) ))
-        (setq dirct "mr")
-        (setq offset (list -0.5 0.5))
-        (if (= i 0) (setq offset (list -0.5 1.0)) )
-        (if (= i 1) (setq offset (list -0.5 0.5)) )
-        (if (= i 2) (setq offset (list -0.25 0.5)) )
-        (drawCoords refpoint target offset dirct)
-
-        (setq i (+ i 1))
-    )
-
-    ;; mid points
-    (setq pMDx (list  p7x p8x p9x))
-    (setq pMDy (list  p7y p8y p9y))   
-
-    (setq pn (length pMDx))
-    (setq i 0)
-    (while (< i pn)
-        ;; left down points
-        (setq l (nth i pMDx))
-        (setq d (nth i pMDy))
-        ;; x10
-        (setq l (/ l 10))
-        (setq d (/ d 10))
-        
-        (setq target (list (- 0 x l) (- 0 y d) ))    
-        (setq dirct "mr")
-        (setq offset (list -0.5 0.5))
-        (if (= i 0) (setq offset (list -0.25 0.25)) )
-        (if (= i 1) (setq offset (list -0.5 0.5)) )
-        (if (= i 2) (setq offset (list -0.5 0.5)) )
-        (drawCoords refpoint target offset dirct) 
-
-        ;; right down points
-        (setq r (nth i pMDx))
-        (setq d (nth i pMDy))
-        ;; x10
-        (setq r (/ r 10))
-        (setq d (/ d 10))
-
-        (setq target (list (+ x r) (- 0 y d) ))
-        (setq dirct "ml")
-        (setq offset (list 0.5 0.5))
-        (if (= i 0) (setq offset (list 0.25 0.25)) )
-        (if (= i 1) (setq offset (list 0.5 0.5)) )
-        (if (= i 2) (setq offset (list 0.5 0.5)) )
-        (drawCoords refpoint target offset dirct)
-
-        (setq i (+ i 1))
-    )
-
-
-
 )
 
-(defun drawCoords ( refpoint target offset dirct / rx ry XYZ strx stry strp dx dy XYZ2 en obj)
+(defun drawCoords ( fontSize fontColor refpoint target offset dirct / osColor rx ry XYZ strx stry strp dx dy XYZ2 en obj)
+    
+    (vl-load-com)
+    (setq osColor (getvar "Cecolor"))
 
     (setq rx (+ (car refpoint ) (car target ) ) )
     (setq ry (+ (cadr refpoint) (cadr target) ) )
     (setq XYZ (list rx ry 0))
 
-    (setq dx (car offset ) ) 
-    (setq dy (cadr offset)) 
-    (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
-
-        ;; x10
-        (setq rx10 (* rx 10))
-        (setq ry10 (* ry 10)) 
-
-    (setq strx (rtos rx10 2 3))
-    (setq stry (rtos ry10 2 3))
+    (setq strx (rtos rx 2 3)); Decimal   precision 
+    (setq stry (rtos ry 2 3))
     (setq strp (strcat "X=" strx "\r\n" "Y=" stry))
 
-    (setq dx (car offset ) ) 
+    (setq dx (car offset )) 
     (setq dy (cadr offset)) 
     (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
 
     (command "line" XYZ XYZ2 "")
     (setq en (entlast))
     (setq obj (vlax-ename->vla-object en))
-    (vlax-put-property obj 'Color 6)
-    (setq a 0)
+    (vlax-put-property obj 'Color fontColor)
 
+    (setvar "cecolor" (itoa (fix fontColor)))
     (command "mtext" XYZ2 "j" dirct XYZ2 strp "")
 
-    ;;(command "mleader" "h" "o" "A" "n" "C" "M" "X" XYZ XYZ2 strp "")
     (setq en (entlast))
     (setq obj (vlax-ename->vla-object en))
-    (vlax-put-property obj 'Height 0.06)
+    (vlax-put-property obj 'Height fontSize)
 
-    (if (= dirct "mr")
-        (progn
-            (setq en (entlast))
-            (setq obj (vlax-ename->vla-object en))
-            (vlax-put-property obj 'AttachmentPoint 4)
-        )
-    )
+    (setvar "cecolor" osColor)
 )
 
-(defun chcode( en code data / endata)
+(defun chcode( en code data / endata old new)
     
     (setq endata (entget en))
     (setq old (assoc code endata))
@@ -258,21 +116,17 @@
             (setq endata (subst new old endata))
         )
     )
-
     (entmod endata)
 )
 
-
-
-(defun c:pick()
+(defun c:pick( / en obj)
     (vl-load-com)
     (setq en (car (entsel "select:")))
     (setq obj (vlax-ename->vla-object en))
     (vlax-dump-object obj)
 )
 
-
-(defun c:pt()
+(defun c:pt( / pt1 point_x point_y point_z)
     (setvar "cmdecho" 0)
     (while (setq pt1 (getpoint "\n请指定点位置:"))
         (setq point_x (rtos (car pt1) 2 2))
@@ -282,10 +136,6 @@
     )
     (setvar "cmdecho" 1)
 )
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun openExcelfile( / exlfile)
 
@@ -310,13 +160,13 @@
 
 )
 
-(defun readData( / result )
+(defun readData( / result sheetName XLobj wbobj sheetobj sheet cells fontsize fontColor coords AAX AAY coordsList coordi )
     ;;cfg
     (setq sheetName "SealData")
     ;;open excel
     (vl-load-com)
 	(setq XLobj (vlax-create-object "Excel.Application"));
-	(vla-put-visible XLobj 1);
+	(vla-put-visible XLobj 0);
 	(setq wbobj (vlax-invoke-method (vlax-get-property XLobj "WorkBooks") "Open" (getfiled "Open Excel file" "" "xlsx" 20)));
 	(setq sheetobj (vlax-get-property wbobj "Sheets"))
 	(setq sheet  (vlax-get-property  sheetobj "Item" sheetName))
@@ -326,19 +176,16 @@
     (setq fontsize (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 3 8)) "Value")));;字体大小
     (setq fontColor (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 4 8)) "Value")));;字体颜色
     (setq coords (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 5 8)) "Value")));;坐标个数
-    (setq AAX (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 5 8)) "Value")));;AA X 尺寸
-    (setq AAY (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 5 8)) "Value")));;AA Y 尺寸
+    (setq AAX (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 8 8)) "Value")));;AA X 尺寸
+    (setq AAY (vlax-variant-value (vlax-get-property (vlax-variant-value (vlax-get-property  cells "Item" 9 8)) "Value")));;AA Y 尺寸
 
-    (setq coordsList (list fontsize fontColor coords AAX AAY))
+    (setq coordsList (list (list fontsize fontColor coords AAX AAY)))
     (setq coords (fix coords))
     (setq coordi 0)
     (while (< coordi coords)
         (setq coordsList (append coordsList (list (readCoorData cells coordi))))
         (setq coordi (+ coordi 1))
     )
-
-    (nth 0 (nth 0 coordsList))
-
 
     ;;close Excel
     (vlax-invoke-method wbobj "Close" )
@@ -347,7 +194,7 @@
     (setq result coordsList)
 )
 
-(defun readCoorData( cells n / px py shiftAngle shiftDist i)
+(defun readCoorData( cells n / result i px py shiftAngle shiftDist)
     ;; start at 13 8
     ;; data = X Y angle dist
     ;;        8 9   11    12
