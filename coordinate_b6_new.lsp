@@ -1,4 +1,4 @@
-(defun c:testfun( / cmvar osvar ss n en endata entype)
+(defun c:drawseal( / cmvar osvar ss n en endata entype)
 
     (setq cmvar (getvar "cmdecho"))
     (setvar "cmdecho" 0)
