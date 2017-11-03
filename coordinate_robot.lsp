@@ -7,7 +7,7 @@
 
     (setq cmvar (getvar "cmdecho"))
     (setvar "cmdecho" 0)
-    (setq osvar (getvar "osmode"))
+    (setq osvar (getvar "osmode")).
     (setvar "osmode" 0)
 
     (setq ss (ssget))
