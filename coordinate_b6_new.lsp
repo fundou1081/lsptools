@@ -1,4 +1,4 @@
-(defun c:drawseal( / cmvar osvar ss n en endata entype)
+(defun c:drawseal( / cmvar osvar ss n en endata entype dataList)
 
     (setq cmvar (getvar "cmdecho"))
     (setvar "cmdecho" 0)
@@ -9,13 +9,15 @@
     
     (command "zoom" "e")
 
+    (setq dataList (readData))
+
     (setq n 0)
     (repeat (sslength ss)
         (setq en (ssname ss n))
         (setq endata (entget en))
         (setq entype (cdr (assoc 0 endata)))
         (if (= entype "INSERT")
-            (subfun en)
+            (subfun en dataList)
         )    
         (setq n (+ 1 n))
     )
@@ -25,7 +27,7 @@
 )
 
 
-(defun subfun( en / xobj vardata safedata inspoint userucs refpoint  fontSize fontColor coords AAX AAY x y i px py pangle pdist target angle offset angleP1 angleP2 dirct)
+(defun subfun( en dataList / xobj vardata safedata inspoint userucs refpoint fontSize fontColor coords AAX AAY x y i px py pangle pdist target angle offset angleP1 angleP2 dirct)
     (vl-load-com)
     (setq xobj (vlax-ename->vla-object en))
     (setq vardata (vlax-get-property xobj 'InsertionPoint))
@@ -34,8 +36,7 @@
     (setq userucs (getvar "ucsorg"))
 
     (setq refpoint (list (- (car inspoint) (car userucs)) (- (cadr inspoint) (cadr userucs))))
-
-    (setq dataList (readData))
+    
     (setq fontSize (nth 0 (nth 0 dataList)))
     (setq fontColor (nth 1 (nth 0 dataList)))
     (setq coords (nth 2 (nth 0 dataList)))
