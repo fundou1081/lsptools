@@ -5,7 +5,7 @@
     (setq osvar (getvar "osmode"))
     (setvar "osmode" 0)
 
-    (setq ss (ssget "Please select block drawing: "))
+    (setq ss (ssget))
     
     (command "zoom" "e")
 
