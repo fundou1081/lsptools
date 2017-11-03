@@ -25,7 +25,7 @@
 )
 
 
-(defun subfun( en / xobj vardata safedata inspoint userucs refpoint dataList fontSize fontColor coords AAX AAY x y i px py pangle pdist target angle offset angleP1 angleP2 dirct)
+(defun subfun( en / xobj vardata safedata inspoint userucs refpoint  fontSize fontColor coords AAX AAY x y i px py pangle pdist target angle offset angleP1 angleP2 dirct)
     (vl-load-com)
     (setq xobj (vlax-ename->vla-object en))
     (setq vardata (vlax-get-property xobj 'InsertionPoint))
@@ -39,8 +39,8 @@
     (setq fontSize (nth 0 (nth 0 dataList)))
     (setq fontColor (nth 1 (nth 0 dataList)))
     (setq coords (nth 2 (nth 0 dataList)))
-    (setq AAX (nth 2 (nth 0 dataList)))
-    (setq AAY (nth 2 (nth 0 dataList)))
+    (setq AAX (nth 3 (nth 0 dataList)))
+    (setq AAY (nth 4 (nth 0 dataList)))
 
     (setq x (/ AAX 2 ))
     (setq y (/ AAY 2 ))
@@ -55,14 +55,14 @@
 
         (setq target (list px py 0))
         (setq angle (angtof (rtos pangle 2 6)))
-        (setq offset (polar target angle pdist))
+        (setq offset (polar '(0 0 0) angle pdist))
 
         (setq angleP1 (angtof "90"))
         (setq angleP2 (angtof "270"))
         (if (and (>= angle angleP1) (< angle angleP2))
-            (setq dirct "ml")
-            ;else
             (setq dirct "mr")
+            ;else
+            (setq dirct "ml")
         )
     
         (drawCoords fontSize fontColor refpoint target offset dirct)  
@@ -83,7 +83,7 @@
     (setq stry (rtos ry 2 3))
     (setq strp (strcat "X=" strx "\r\n" "Y=" stry))
 
-    (setq dx (car offset )) 
+    (setq dx (car offset)) 
     (setq dy (cadr offset)) 
     (setq XYZ2 (list (+ rx dx) (+ ry dy) 0))
 
