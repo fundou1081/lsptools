@@ -1,3 +1,8 @@
+;;; code by haoobo from B1 PNL MASK 2
+;;; more tools in github https://github.com/fundou1081/lsptools
+;;; 2017.11.3
+;;; 126453
+
 (defun c:drawseal( / cmvar osvar ss n en endata entype dataList)
 
     (setq cmvar (getvar "cmdecho"))
