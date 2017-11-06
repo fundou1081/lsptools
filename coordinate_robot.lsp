@@ -2,12 +2,19 @@
 ;;; more tools in github https://github.com/fundou1081/lsptools
 ;;; 2017.11.3
 ;;; 126453
+(defun fileInfo () 
+  (princ "\n-- Coordinate Robot --\n")
+  (princ "\ncode by fundou\n")
+  (princ "\nCommand \"drawseal\" to start\n")
+)
+
+(fileInfo)
 
 (defun c:drawseal( / cmvar osvar ss n en endata entype dataList)
 
     (setq cmvar (getvar "cmdecho"))
     (setvar "cmdecho" 0)
-    (setq osvar (getvar "osmode")).
+    (setq osvar (getvar "osmode"))
     (setvar "osmode" 0)
 
     (setq ss (ssget))
@@ -23,7 +30,7 @@
         (setq entype (cdr (assoc 0 endata)))
         (if (= entype "INSERT")
             (subfun en dataList)
-        )    
+        )
         (setq n (+ 1 n))
     )
     (command "zoom" "e")
@@ -32,7 +39,7 @@
 )
 
 
-(defun subfun( en dataList / xobj vardata safedata inspoint userucs refpoint fontSize fontColor coords AAX AAY x y i px py pangle pdist target angle offset angleP1 angleP2 dirct)
+(defun subfun( en dataList / xobj vardata safedata inspoint userucs refpoint fontSize fontColor coords AAX AAY x y i px py pangle pdist target angleP0 offset angleP1 angleP2 dirct)
     (vl-load-com)
     (setq xobj (vlax-ename->vla-object en))
     (setq vardata (vlax-get-property xobj 'InsertionPoint))
@@ -60,12 +67,12 @@
         (setq pdist (nth 3 (nth i dataList)))
 
         (setq target (list px py 0))
-        (setq angle (angtof (rtos pangle 2 6)))
-        (setq offset (polar '(0 0 0) angle pdist))
+        (setq angleP0 (angtof (rtos pangle 2 6)))
+        (setq offset (polar '(0 0 0) angleP0 pdist))
 
         (setq angleP1 (angtof "90"))
         (setq angleP2 (angtof "270"))
-        (if (and (>= angle angleP1) (< angle angleP2))
+        (if (and (>= angleP0 angleP1) (< angleP0 angleP2))
             (setq dirct "mr")
             ;else
             (setq dirct "ml")
